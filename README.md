@@ -1,9 +1,9 @@
-# Advanced Display
+# Advanced Displays
 
 Full monitor control for Omarchy. Resolution, arrangement, refresh rate, scale, rotation, mirroring, VRR, HDR and brightness, per display.
 
 <p align="center">
-  <img src="screenshots/menu.png" alt="Display panel" height="360">
+  <img src="preview.png" alt="Display panel" height="360">
   <img src="screenshots/arrange.png" alt="Arrange window" height="360">
 </p>
 
