@@ -1,34 +1,34 @@
-# Advanced Display for Omarchy
+# Advanced Display
 
-Bar widget and panel that replaces the built-in Display panel with full per-monitor configuration.
+Full monitor control for Omarchy. Resolution, arrangement, refresh rate, scale, rotation, mirroring, VRR, HDR and brightness, per display.
 
-![Display panel](screenshots/menu.png)
-
-![Arrange window](screenshots/arrange.png)
-
-- Pick a display in the list. Everything below edits that one.
-- Resolution, refresh rate, scale, rotation, mirror, VRR, HDR, brightness (backlight or DDC).
-- Arrange… button when more than one display is on. Opens a window where you drag displays.
-  Edges snap to neighbours and gaps close, so the cursor can always cross.
-- HDR only shows when the monitor's EDID advertises it. VRR shows the EDID refresh range as a hint.
-- Every change is applied live. Keep it within 15 seconds or it reverts!
-- Keep writes the whole layout into a managed block at the end of `~/.config/hypr/monitors.lua`,
-  keyed by `desc:` so settings follow the monitor, not the port.
-- "Forget saved layout" removes the block and reloads Hyprland.
+<p align="center">
+  <img src="screenshots/menu.png" alt="Display panel" height="360">
+  <img src="screenshots/arrange.png" alt="Arrange window" height="360">
+</p>
 
 ## Install
 
 ```bash
-omarchy plugin add https://github.com/Fluffet/omarchy-advanced-display --enable
-```
-
-This adds the widget to your bar. Disable the built-in Display widget so you do not get two icons:
-
-```bash
+omarchy plugin add https://github.com/Fluffet/omarchy-advanced-displays --enable
 omarchy plugin disable omarchy.monitor
 ```
 
-The built-in panel's key, SUPER+CTRL+D, then points at nothing. Rebind it in `~/.config/hypr/bindings.lua`:
+The second line hides the built-in Display widget, so you don't get two icons.
+
+That's it. Click the new icon in your bar.
+
+## Two things to know
+
+**Changes apply live, but revert after 15 seconds.** Press **Keep** to save.
+
+**Keep writes to `~/.config/hypr/monitors.lua`.** 
+
+Settings are stored per monitor, not per port. Move the cable, settings follow.
+
+## Rebind SUPER + CTRL + D
+
+That key opened the built-in panel, which is now off. Point it here instead, in `~/.config/hypr/bindings.lua`:
 
 ```lua
 hl.unbind("SUPER + CTRL + D")
@@ -36,22 +36,26 @@ o.bind("SUPER + CTRL + D", "Display", "omarchy-shell io.github.fluffet.display t
 o.bind("SUPER + CTRL + SHIFT + D", "Arrange displays", "omarchy-shell shell toggle io.github.fluffet.display")
 ```
 
-Move it like any other widget:
-
-```bash
-omarchy bar move io.github.fluffet.display --section right
-```
-
-## Remove
+## Uninstall
 
 ```bash
 omarchy plugin remove io.github.fluffet.display
 ```
 
-This removes the widget only. The managed block in `~/.config/hypr/monitors.lua` stays until you press
-"Forget saved layout" before removing, or delete the block by hand.
+Press **Forget saved layout** first if you also want your monitor settings gone. Otherwise the block in `monitors.lua` stays.
 
-## IPC
+<details>
+<summary>Small print</summary>
+
+- HDR only appears if the monitor's EDID says it supports it.
+- VRR shows the EDID refresh range as a hint.
+- Brightness uses the backlight on laptops, DDC on desktop monitors.
+- Move the widget like any other: `omarchy bar move io.github.fluffet.display --section right`
+
+</details>
+
+<details>
+<summary>Scripting (IPC)</summary>
 
 ```bash
 omarchy-shell io.github.fluffet.display toggle
@@ -63,7 +67,10 @@ omarchy-shell io.github.fluffet.display revert
 omarchy-shell io.github.fluffet.display forget
 ```
 
-## Develop
+</details>
+
+<details>
+<summary>Hacking on it</summary>
 
 ```bash
 ln -s "$PWD" ~/.config/omarchy/plugins/io.github.fluffet.display
@@ -75,3 +82,5 @@ qmllint -I "$OMARCHY_PATH/shell" Panel.qml
 ```
 
 Hot reload through a symlinked plugin dir is unreliable. `omarchy restart shell` always works.
+
+</details>
