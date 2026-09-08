@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.fluffet.display",
+  "name": "Advanced Display",
+  "version": "0.1.0",
+  "author": "Fredrik Öhrström",
+  "license": "MIT",
+  "description": "Per-display resolution, refresh rate, scale, rotation, mirroring, VRR, HDR, brightness and arrangement, with safe apply and persistence to monitors.lua",
+  "kinds": ["bar-widget", "overlay"],
+  "entryPoints": { "barWidget": "Panel.qml", "overlay": "Arrange.qml" },
+  "barWidget": {
+    "displayName": "Advanced Display",
+    "description": "Replaces the built-in Display panel with full per-monitor configuration",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
