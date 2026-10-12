@@ -109,7 +109,7 @@ Item {
 
   function keep() {
     var lines = []
-    for (var i = 0; i < displays.length; i++) lines.push(Model.luaLine(settingsFor(displays[i])))
+    for (var i = 0; i < displays.length; i++) lines.push(Model.luaLine(Model.persistedSettings(settingsFor(displays[i]), displays[i].modes)))
     pending = {}
     luaFileProc.command = ["bash", "-c", "printf '%s\\n' \"$1\" | \"$0\" write", store.luaScript, lines.join("\n")]
     luaFileProc.running = true

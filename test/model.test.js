@@ -124,3 +124,26 @@ test("snapPosition closes gaps so displays always touch", () => {
   assert.deepEqual(Model.snapPosition({ x: 3000, y: 2000, w: 1440, h: 960 }, [laptop], 60), { x: 1440, y: 0 })
   assert.deepEqual(Model.snapPosition({ x: 100, y: 1500, w: 1440, h: 960 }, [laptop], 60), { x: 100, y: 960 })
 })
+
+test("persistedSettings keeps a mode the display lists", () => {
+  const dell = Model.parseMonitors(hyprctl)[1]
+  const s = Model.settingsFromDisplay(dell)
+  assert.equal(Model.persistedSettings(s, dell.modes), s)
+})
+
+test("persistedSettings replaces a mode the display does not list", () => {
+  const raw = JSON.parse(hyprctl)
+  // A port rule forced 2560x1440 on a scaler that only offers 1080p.
+  raw[1].availableModes = ["1920x1080@60.00Hz", "1280x720@60.00Hz"]
+  const scaler = Model.parseMonitors(JSON.stringify(raw))[1]
+  const s = Model.persistedSettings(Model.settingsFromDisplay(scaler), scaler.modes)
+  assert.match(Model.luaLine(s), /mode = "1920x1080@60.00", position = "1440x-480"/)
+})
+
+test("persistedSettings trusts the live mode without a mode list", () => {
+  const raw = JSON.parse(hyprctl)
+  raw[1].availableModes = []
+  const d = Model.parseMonitors(JSON.stringify(raw))[1]
+  const s = Model.settingsFromDisplay(d)
+  assert.equal(Model.persistedSettings(s, d.modes), s)
+})

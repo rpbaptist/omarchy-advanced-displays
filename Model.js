@@ -158,6 +158,19 @@ function settingsFromDisplay(d) {
   }
 }
 
+// What Keep writes for one display. A live mode can come from a config rule
+// the display's EDID does not list (e.g. a port rule written for another
+// screen). Persisting it would bake a blank screen into monitors.lua, so
+// fall back to the preferred mode. Without a mode list, trust the live mode.
+function persistedSettings(s, modes) {
+  if (s.disabled || !modes || !modes.length) return s
+  for (var i = 0; i < modes.length; i++) {
+    var m = modes[i]
+    if (m.width === s.width && m.height === s.height && Math.abs(m.hz - Number(s.hz)) < 0.01) return s
+  }
+  return Object.assign({}, s, { width: modes[0].width, height: modes[0].height, hz: modes[0].hz })
+}
+
 function luaString(text) {
   return '"' + String(text).replace(/[\\"]/g, "\\$&").replace(/[\r\n]/g, " ") + '"'
 }
@@ -339,6 +352,7 @@ if (typeof module !== "undefined") {
     resolutions: resolutions,
     refreshRates: refreshRates,
     settingsFromDisplay: settingsFromDisplay,
+    persistedSettings: persistedSettings,
     luaLine: luaLine,
     parseEdid: parseEdid,
     parsePosition: parsePosition,
