@@ -6,7 +6,7 @@ import "Model.js" as Model
 
 // Shared state for the bar popup and the arrangement window. Every
 // hl.monitor change is applied live through `hyprctl eval` and reverted
-// after revertSeconds unless kept. Keep writes the whole layout into a
+// after revertSeconds unless kept. Keep merges the connected displays into a
 // managed block in ~/.config/hypr/monitors.lua.
 Item {
   id: store

@@ -25,6 +25,7 @@ That's it. Click the new icon in your bar.
 **Keep writes to `~/.config/hypr/monitors.lua`.** 
 
 Settings are stored per monitor, not per port. Move the cable, settings follow.
+Monitors that are unplugged when you press Keep keep their saved settings.
 
 ## Rebind SUPER + CTRL + D
 

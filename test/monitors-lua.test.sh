@@ -21,7 +21,17 @@ head -2 "$MONITORS_LUA" | diff - <(printf '%s' "$original") >/dev/null || fail "
 [[ "$("$script" read)" == 'hl.monitor({ output = "desc:A"'* ]] || fail "read did not return body"
 
 printf 'hl.monitor({ output = "desc:B", disabled = true })\n' | "$script" write
-grep -q 'desc:A' "$MONITORS_LUA" && fail "old block survived rewrite"
+grep -q 'desc:A' "$MONITORS_LUA" || fail "unplugged display was forgotten on write"
+grep -q 'desc:B' "$MONITORS_LUA" || fail "new display not written"
+
+printf 'hl.monitor({ output = "desc:A", mode = "2x2@1.00", position = "0x0", scale = 1, transform = 0 })\n' | "$script" write
+[[ "$(grep -c 'desc:A' "$MONITORS_LUA")" == 1 ]] || fail "display saved twice"
+grep -q '"2x2@1.00"' "$MONITORS_LUA" || fail "rewrite did not replace the saved line"
+grep -q 'desc:B' "$MONITORS_LUA" || fail "other display lost on rewrite"
+
+printf 'hl.monitor({ output = "desc:Evil \\"Mon\\" co", disabled = true })\n' | "$script" write
+printf 'hl.monitor({ output = "desc:Evil \\"Mon\\" co", mode = "1x1@1.00", position = "0x0", scale = 1, transform = 0 })\n' | "$script" write
+[[ "$(grep -c 'desc:Evil' "$MONITORS_LUA")" == 1 ]] || fail "escaped output not matched"
 [[ "$(grep -c 'BEGIN io.github' "$MONITORS_LUA")" == 1 ]] || fail "duplicate markers"
 [[ "$(grep -c '^$' "$MONITORS_LUA")" == 1 ]] || fail "blank lines accumulate on rewrite"
 
